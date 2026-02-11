@@ -45,7 +45,8 @@ void exibir_dashboard(int mes, int ano) {
                     }
                 }
                 if(!encontrou && quantidade_categorias < MAX_CAT) {
-                    strcpy(categorias[quantidade_categorias], transacao.categoria);
+                    strncpy(categorias[quantidade_categorias], transacao.categoria, MAX_CAT - 1);
+                    categorias[quantidade_categorias][MAX_CAT - 1] = '\0';
                     valores_por_categoria[quantidade_categorias] = transacao.valor;
                     quantidade_categorias++;
                 }

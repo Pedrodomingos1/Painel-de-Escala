@@ -24,11 +24,13 @@ int main() {
         printf("==================================================%s\n", COR_RESET);
         printf("  1. Visualizar Painel do Mes Atual (%02d/%d)\n", mes_atual, ano_atual);
         printf("  2. Visualizar Painel de Outro Mes\n");
-        printf("  3. Exportar Relatorio CSV (Mes Atual)\n");
+        printf("  3. Analise Comparativa\n");
+        printf("  4. Exportar Relatorio CSV (Mes Atual)\n");
         printf("  0. Sair\n");
         printf("==================================================\n");
         printf("  Escolha uma opcao: ");
         scanf("%d", &opcao);
+        while(getchar() != '\n');
 
         switch(opcao) {
             case 1:
@@ -40,6 +42,9 @@ int main() {
                 exibir_dashboard(mes_escolhido, ano_escolhido);
                 break;
             case 3:
+                comparar_periodos(mes_atual, ano_atual);
+                break;
+            case 4:
                 exportar_relatorio(mes_atual, ano_atual);
                 break;
             case 0:

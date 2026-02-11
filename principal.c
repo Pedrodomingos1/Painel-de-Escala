@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <time.h>
 #include "financas.h"
+#include "validacao.h"
 
 int main() {
-    gerar_transacoes();
+    if (!inicializar_banco_dados()) {
+        printf("Erro ao inicializar banco de dados\n");
+        return 1;
+    }
 
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
@@ -31,10 +35,8 @@ int main() {
                 exibir_dashboard(mes_atual, ano_atual);
                 break;
             case 2:
-                printf("\n  Informe o Mes (1-12): ");
-                scanf("%d", &mes_escolhido);
-                printf("  Informe o Ano (ex: 2026): ");
-                scanf("%d", &ano_escolhido);
+                mes_escolhido = ler_input_seguro("\n  Informe o Mes (1-12): ", 1, 12);
+                ano_escolhido = ler_input_seguro("  Informe o Ano (ex: 2026): ", 2000, 2100);
                 exibir_dashboard(mes_escolhido, ano_escolhido);
                 break;
             case 3:

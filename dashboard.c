@@ -110,3 +110,53 @@ void exportar_relatorio(int mes, int ano) {
     fclose(saida);
     printf("\n%sArquivo 'relatorio_financeiro.csv' exportado com sucesso!%s\n", COR_VERDE, COR_RESET);
 }
+
+MetricasMes calcular_metricas(int mes, int ano) {
+    MetricasMes metricas = {0};
+    FILE *arquivo = fopen("financas.dat", "rb");
+    
+    if (!arquivo) return metricas;
+    
+    Transacao transacao;
+    while(fread(&transacao, sizeof(Transacao), 1, arquivo)) {
+        if (transacao.mes == mes && transacao.ano == ano) {
+            metricas.qtd_transacoes++;
+            if (transacao.tipo == 1) {
+                metricas.total_entradas += transacao.valor;
+            } else {
+                metricas.total_saidas += transacao.valor;
+            }
+        }
+    }
+    
+    fclose(arquivo);
+    metricas.saldo = metricas.total_entradas - metricas.total_saidas;
+    metricas.ticket_medio_saida = metricas.qtd_transacoes > 0 ? 
+        metricas.total_saidas / metricas.qtd_transacoes : 0;
+    
+    return metricas;
+}
+
+void comparar_periodos(int mes_atual, int ano_atual) {
+    MetricasMes mes_passado = calcular_metricas(
+        mes_atual == 1 ? 12 : mes_atual - 1,
+        mes_atual == 1 ? ano_atual - 1 : ano_atual
+    );
+    MetricasMes mes_corrente = calcular_metricas(mes_atual, ano_atual);
+    
+    printf("\n");
+    printf("%s==================================================\n", COR_NEGRITO);
+    printf("   ANALISE COMPARATIVA - %02d/%d\n", mes_atual, ano_atual);
+    printf("==================================================%s\n\n", COR_RESET);
+    
+    if (mes_passado.total_saidas > 0) {
+        double variacao = ((mes_corrente.total_saidas - mes_passado.total_saidas) 
+                          / mes_passado.total_saidas) * 100;
+        printf("  Variacao de gastos: %+.1f%%\n", variacao);
+    }
+    
+    printf("  Ticket medio mes anterior: R$ %.2f\n", mes_passado.ticket_medio_saida);
+    printf("  Ticket medio mes atual: R$ %.2f\n", mes_corrente.ticket_medio_saida);
+    
+    printf("\n%s==================================================%s\n", COR_NEGRITO, COR_RESET);
+}

@@ -1,7 +1,7 @@
 #ifndef FINANCAS_H
 #define FINANCAS_H
 
-#define MAX_CAT 20
+#define MAX_CAT 50
 
 #define COR_RESET   "\x1b[0m"
 #define COR_VERMELHO "\x1b[31m"
@@ -20,8 +20,20 @@ typedef struct {
     char categoria[MAX_CAT];
 } Transacao;
 
-void gerar_transacoes();
+typedef struct {
+    double total_entradas;
+    double total_saidas;
+    double saldo;
+    double ticket_medio_saida;
+    int qtd_transacoes;
+} MetricasMes;
+
+int inicializar_banco_dados();
+void criar_arquivo_inicial();
+void criar_backup_automatico();
 void exibir_dashboard(int mes, int ano);
 void exportar_relatorio(int mes, int ano);
+void comparar_periodos(int mes_atual, int ano_atual);
+MetricasMes calcular_metricas(int mes, int ano);
 
 #endif
